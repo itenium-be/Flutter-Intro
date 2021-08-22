@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_intro/model/zwaarste-lijst-entry.dart';
 import 'package:flutter_intro/model/zwaarste-lijst-result.dart';
 
@@ -17,30 +20,53 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TableView(title: title, data: zwaarsteLijst),
+      home: TableView(title: title),
     );
   }
 }
 
-class TableView extends StatelessWidget {
+class TableView extends StatefulWidget {
   final String title;
-  final ZwaarsteLijstResult data;
 
-  TableView({Key? key, required this.title, required this.data})
-      : super(key: key);
+  TableView({Key? key, required this.title}) : super(key: key);
+
+  @override
+  _TableViewState createState() => _TableViewState();
+}
+
+class _TableViewState extends State<TableView> {
+  ZwaarsteLijstResult? data;
+
+  loadData() async {
+    await Future.delayed(Duration(seconds: 5)); // mock http call, ...
+    String jsonString =
+        await rootBundle.loadString('assets/zwaarste-lijst.json');
+    this.setState(() {
+      var decoded = json.decode(jsonString);
+      this.data = ZwaarsteLijstResult.fromJson(decoded);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('$title - ${data.year}'),
+        title: Text('${widget.title} - ${this.data?.year ?? 'Loading...'}'),
       ),
-      body: ListView.builder(
-        itemCount: data.top10.length,
-        itemBuilder: (context, index) {
-          return TableViewItem(entry: data.top10[index]);
-        },
-      ),
+      body: this.data != null
+          ? ListView.builder(
+              itemCount: this.data != null ? this.data!.top10.length : 0,
+              itemBuilder: (context, index) {
+                return TableViewItem(entry: this.data!.top10[index]);
+              },
+            )
+          : Center(child: CircularProgressIndicator()),
     );
   }
 }

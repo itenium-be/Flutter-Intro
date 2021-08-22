@@ -1,0 +1,55 @@
+{
+  "year": 2021,
+  "top10": [
+    {
+      "ranking": 1,
+      "artist": "Metallica",
+      "song": "Master of Puppets"
+    },
+    {
+      "ranking": 2,
+      "artist": "Tool",
+      "song": "Schism"
+    },
+    {
+      "ranking": 3,
+      "artist": "Brutus",
+      "song": "All Along"
+    },
+    {
+      "ranking": 4,
+      "artist": "Slayer",
+      "song": "Raining Blood"
+    },
+    {
+      "ranking": 5,
+      "artist": "Amerna",
+      "song": "A Solitary Reign"
+    },
+    {
+      "ranking": 6,
+      "artist": "Iron Maiden",
+      "song": "Fear of the Dark"
+    },
+    {
+      "ranking": 7,
+      "artist": "Rammstein",
+      "song": "Deutschland"
+    },
+    {
+      "ranking": 8,
+      "artist": "Steak Number Eight",
+      "song": "The Sea Is Dying"
+    },
+    {
+      "ranking": 9,
+      "artist": "Channel Zero",
+      "song": "Black Fuel"
+    },
+    {
+      "ranking": 10,
+      "artist": "Slipknot",
+      "song": "Duality"
+    }
+  ]
+}

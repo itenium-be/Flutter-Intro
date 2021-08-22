@@ -5,6 +5,16 @@ class ZwaarsteLijstEntry {
 
   ZwaarsteLijstEntry(this.ranking, this.artist, this.song);
 
+  ZwaarsteLijstEntry.fromJson(Map<String, dynamic> json)
+      : ranking = json['ranking'],
+        artist = json['artist'],
+        song = json['song'];
+
+  Map<String, dynamic> toJson() => {
+        'artist': artist,
+        'song': song,
+      };
+
   @override
   String toString() {
     return '$ranking. $artist - $song';
