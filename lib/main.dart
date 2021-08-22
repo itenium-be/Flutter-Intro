@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_intro/model/zwaarste-lijst-entry.dart';
 import 'package:flutter_intro/model/zwaarste-lijst-result.dart';
 
 void main() {
@@ -32,18 +33,68 @@ class TableView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Zwaarste Lijst'),
+        title: Text('$title - ${data.year}'),
       ),
       body: ListView.builder(
         itemCount: data.top10.length,
         itemBuilder: (context, index) {
-          final item = data.top10[index];
-
-          return ListTile(
-            title: Text(item.artist),
-            subtitle: Text(item.song),
-          );
+          return TableViewItem(entry: data.top10[index]);
         },
+      ),
+    );
+  }
+}
+
+class TableViewItem extends StatefulWidget {
+  final ZwaarsteLijstEntry entry;
+
+  const TableViewItem({Key? key, required this.entry}) : super(key: key);
+
+  @override
+  _TableViewItemState createState() => _TableViewItemState();
+}
+
+class _TableViewItemState extends State<TableViewItem> {
+  bool _isFavorited = false;
+
+  void _openEntry() {
+    print('Not yet implemented to open entry ${widget.entry}');
+  }
+
+  void _toggleFavorite() {
+    setState(() {
+      _isFavorited = !_isFavorited;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(widget.entry.artist),
+      subtitle: Text(widget.entry.song),
+      leading: Container(
+        child: CircleAvatar(
+          radius: _isFavorited ? 20.0 : 18.0,
+          backgroundColor: Theme.of(context).accentColor,
+          foregroundColor: Theme.of(context).buttonColor,
+          child: Text('${widget.entry.ranking}'),
+        ),
+      ),
+      trailing: Wrap(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.open_in_new),
+            color: Colors.green[500],
+            onPressed: _openEntry,
+          ),
+          IconButton(
+            icon: (_isFavorited
+                ? const Icon(Icons.star)
+                : const Icon(Icons.star_border)),
+            color: Colors.red[500],
+            onPressed: _toggleFavorite,
+          ),
+        ],
       ),
     );
   }

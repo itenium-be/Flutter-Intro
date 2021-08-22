@@ -4,4 +4,9 @@ class ZwaarsteLijstEntry {
   final String song;
 
   ZwaarsteLijstEntry(this.ranking, this.artist, this.song);
+
+  @override
+  String toString() {
+    return '$ranking. $artist - $song';
+  }
 }
