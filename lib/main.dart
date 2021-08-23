@@ -37,7 +37,8 @@ class TableView extends StatefulWidget {
 class _TableViewState extends State<TableView> {
   ZwaarsteLijstResult? data;
 
-  loadData() async {
+  Future<void> _loadData() async {
+    this.setState(() => this.data = null);
     await Future.delayed(Duration(seconds: 5)); // mock http call, ...
     String jsonString =
         await rootBundle.loadString('assets/zwaarste-lijst.json');
@@ -50,7 +51,7 @@ class _TableViewState extends State<TableView> {
   @override
   void initState() {
     super.initState();
-    this.loadData();
+    this._loadData();
   }
 
   @override
@@ -60,11 +61,14 @@ class _TableViewState extends State<TableView> {
         title: Text('${widget.title} - ${this.data?.year ?? 'Loading...'}'),
       ),
       body: this.data != null
-          ? ListView.builder(
-              itemCount: this.data != null ? this.data!.top10.length : 0,
-              itemBuilder: (context, index) {
-                return TableViewItem(entry: this.data!.top10[index]);
-              },
+          ? RefreshIndicator(
+              child: ListView.builder(
+                itemCount: this.data != null ? this.data!.top10.length : 0,
+                itemBuilder: (context, index) {
+                  return TableViewItem(entry: this.data!.top10[index]);
+                },
+              ),
+              onRefresh: _loadData,
             )
           : Center(child: CircularProgressIndicator()),
     );

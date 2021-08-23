@@ -10,3 +10,5 @@
 3.1 Async call + initState
 * Add manual JSON mapping
 * Load JSON file + populate list
+
+3.2 Pull-to-refresh
