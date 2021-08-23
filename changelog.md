@@ -12,3 +12,8 @@
 * Load JSON file + populate list
 
 3.2 Pull-to-refresh
+
+3.3 FutureBuilder
+* Use FutureBuilder to build up TableView
+* TableView is no longer stateful (FutureBuilder handles state and boilerplate code)
+* Error-handling and loading state

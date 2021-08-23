@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_intro/model/zwaarste-lijst-entry.dart';
@@ -25,52 +26,53 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class TableView extends StatefulWidget {
+class TableView extends StatelessWidget {
   final String title;
 
   TableView({Key? key, required this.title}) : super(key: key);
 
-  @override
-  _TableViewState createState() => _TableViewState();
-}
-
-class _TableViewState extends State<TableView> {
-  ZwaarsteLijstResult? data;
-
-  Future<void> _loadData() async {
-    this.setState(() => this.data = null);
-    await Future.delayed(Duration(seconds: 5)); // mock http call, ...
-    String jsonString =
-        await rootBundle.loadString('assets/zwaarste-lijst.json');
-    this.setState(() {
+  Future<ZwaarsteLijstResult> _loadData() async {
+    await Future.delayed(Duration(seconds: 1)); // mock http call, ...
+    bool testWhatHappensIfError = false;
+    if (testWhatHappensIfError) {
+      throw('Test what happens if error thrown');
+    } else {
+      String jsonString =
+      await rootBundle.loadString('assets/zwaarste-lijst.json');
       var decoded = json.decode(jsonString);
-      this.data = ZwaarsteLijstResult.fromJson(decoded);
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    this._loadData();
+      return ZwaarsteLijstResult.fromJson(decoded);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.title} - ${this.data?.year ?? 'Loading...'}'),
-      ),
-      body: this.data != null
-          ? RefreshIndicator(
-              child: ListView.builder(
-                itemCount: this.data != null ? this.data!.top10.length : 0,
-                itemBuilder: (context, index) {
-                  return TableViewItem(entry: this.data!.top10[index]);
-                },
-              ),
-              onRefresh: _loadData,
-            )
-          : Center(child: CircularProgressIndicator()),
+    return FutureBuilder<ZwaarsteLijstResult>(
+      future: _loadData(),
+      builder: (context, snapshot) {
+        Widget body;
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          body = Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          body = Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          ZwaarsteLijstResult data = snapshot.data!;
+          body = RefreshIndicator(
+            child: ListView.builder(
+              itemCount: data.top10.length,
+              itemBuilder: (context, index) {
+                return TableViewItem(entry: data.top10[index]);
+              },
+            ),
+            onRefresh: _loadData,
+          );
+        }
+
+        return Scaffold(
+            appBar: AppBar(
+              title: Text(this.title),
+            ),
+            body: body);
+      },
     );
   }
 }
