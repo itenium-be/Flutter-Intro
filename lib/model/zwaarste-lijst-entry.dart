@@ -19,4 +19,9 @@ class ZwaarsteLijstEntry {
   String toString() {
     return '$ranking. $artist - $song';
   }
+
+  String getIconAssetName() {
+    String escapedName = this.artist.toLowerCase().replaceAll(' ', '_');
+    return 'assets/graphics/bands/$escapedName.png';
+  }
 }

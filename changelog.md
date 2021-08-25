@@ -17,3 +17,7 @@
 * Use FutureBuilder to build up TableView
 * TableView is no longer stateful (FutureBuilder handles state and boilerplate code)
 * Error-handling and loading state
+
+4. Assets and images
+* Add band icons
+* Refactor favourite display: Add box shadow

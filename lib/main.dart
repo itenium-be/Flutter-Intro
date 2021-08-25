@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
       title: title,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        accentColor: Colors.red,
       ),
       home: TableView(title: title),
     );
@@ -35,10 +36,10 @@ class TableView extends StatelessWidget {
     await Future.delayed(Duration(seconds: 1)); // mock http call, ...
     bool testWhatHappensIfError = false;
     if (testWhatHappensIfError) {
-      throw('Test what happens if error thrown');
+      throw ('Test what happens if error thrown');
     } else {
       String jsonString =
-      await rootBundle.loadString('assets/zwaarste-lijst.json');
+          await rootBundle.loadString('assets/zwaarste-lijst.json');
       var decoded = json.decode(jsonString);
       return ZwaarsteLijstResult.fromJson(decoded);
     }
@@ -102,14 +103,30 @@ class _TableViewItemState extends State<TableViewItem> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(widget.entry.artist),
+      title: Text('${widget.entry.ranking}. ${widget.entry.artist}'),
       subtitle: Text(widget.entry.song),
       leading: Container(
+        decoration: _isFavorited
+            ? BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                      blurRadius: 12.0, color: Theme.of(context).accentColor),
+                ],
+                // border: Border(
+                //     left: BorderSide(
+                //         width: 6, color: Theme.of(context).accentColor))
+                // border: Border.all(
+                //   width: 6,
+                //   color: Theme.of(context).accentColor,
+                // ),
+                // borderRadius: BorderRadius.circular(20.0)
+              )
+            : null,
         child: CircleAvatar(
-          radius: _isFavorited ? 20.0 : 18.0,
-          backgroundColor: Theme.of(context).accentColor,
-          foregroundColor: Theme.of(context).buttonColor,
-          child: Text('${widget.entry.ranking}'),
+          radius: 20.0,
+          foregroundImage: ExactAssetImage(widget.entry.getIconAssetName()),
+          foregroundColor: Theme.of(context).accentColor,
         ),
       ),
       trailing: Wrap(
