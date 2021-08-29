@@ -36,10 +36,18 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           if (_selectedEntry != null)
-            MaterialPage(child: TrackDetailsView(entry: _selectedEntry!))
+            MaterialPage(
+              child: TrackDetailsView(entry: _selectedEntry!),
+              key: TrackDetailsView.valueKey,
+            ),
         ],
         onPopPage: (route, result) {
-          _selectedEntry = null;
+          final page = route.settings as MaterialPage;
+
+          if (page.key == TrackDetailsView.valueKey) {
+            setState(() => _selectedEntry = null);
+          }
+
           return route.didPop(result);
         },
       ),
@@ -170,6 +178,8 @@ class _TableViewItemState extends State<TableViewItem> {
 }
 
 class TrackDetailsView extends StatelessWidget {
+  static const valueKey = ValueKey('TrackDetailsView');
+
   final ZwaarsteLijstEntry entry;
 
   const TrackDetailsView({Key? key, required this.entry}) : super(key: key);

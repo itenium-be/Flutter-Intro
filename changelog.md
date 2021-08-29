@@ -26,3 +26,5 @@
 5.1 Imperative navigation (basic)
 * Before Flutter 2: Only declarative way (Navigation push/pop)
 * 2.0: Imperative way of declaring navigation (based on state change)
+
+5.2 Deep navigation
