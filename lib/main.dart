@@ -10,10 +10,15 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  final title = 'Zwaarste lijst';
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
-  // This widget is the root of your application.
+class _MyAppState extends State<MyApp> {
+  final title = 'Zwaarste lijst';
+  ZwaarsteLijstEntry? _selectedEntry;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,15 +27,32 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         accentColor: Colors.red,
       ),
-      home: TableView(title: title),
+      home: Navigator(
+        pages: [
+          MaterialPage(
+            child: TableView(
+              title: title,
+              entrySelected: (entry) => setState(() => _selectedEntry = entry),
+            ),
+          ),
+          if (_selectedEntry != null)
+            MaterialPage(child: TrackDetailsView(entry: _selectedEntry!))
+        ],
+        onPopPage: (route, result) {
+          _selectedEntry = null;
+          return route.didPop(result);
+        },
+      ),
     );
   }
 }
 
 class TableView extends StatelessWidget {
   final String title;
+  final ValueChanged<ZwaarsteLijstEntry>? entrySelected;
 
-  TableView({Key? key, required this.title}) : super(key: key);
+  TableView({Key? key, required this.title, this.entrySelected})
+      : super(key: key);
 
   Future<ZwaarsteLijstResult> _loadData() async {
     await Future.delayed(Duration(seconds: 1)); // mock http call, ...
@@ -61,7 +83,9 @@ class TableView extends StatelessWidget {
             child: ListView.builder(
               itemCount: data.top10.length,
               itemBuilder: (context, index) {
-                return TableViewItem(entry: data.top10[index]);
+                return TableViewItem(
+                    entry: data.top10[index],
+                    entrySelected: this.entrySelected);
               },
             ),
             onRefresh: _loadData,
@@ -80,8 +104,10 @@ class TableView extends StatelessWidget {
 
 class TableViewItem extends StatefulWidget {
   final ZwaarsteLijstEntry entry;
+  final ValueChanged<ZwaarsteLijstEntry>? entrySelected;
 
-  const TableViewItem({Key? key, required this.entry}) : super(key: key);
+  const TableViewItem({Key? key, required this.entry, this.entrySelected})
+      : super(key: key);
 
   @override
   _TableViewItemState createState() => _TableViewItemState();
@@ -91,7 +117,9 @@ class _TableViewItemState extends State<TableViewItem> {
   bool _isFavorited = false;
 
   void _openEntry() {
-    print('Not yet implemented to open entry ${widget.entry}');
+    if (widget.entrySelected != null) {
+      widget.entrySelected!(widget.entry);
+    }
   }
 
   void _toggleFavorite() {
@@ -113,14 +141,6 @@ class _TableViewItemState extends State<TableViewItem> {
                   BoxShadow(
                       blurRadius: 12.0, color: Theme.of(context).accentColor),
                 ],
-                // border: Border(
-                //     left: BorderSide(
-                //         width: 6, color: Theme.of(context).accentColor))
-                // border: Border.all(
-                //   width: 6,
-                //   color: Theme.of(context).accentColor,
-                // ),
-                // borderRadius: BorderRadius.circular(20.0)
               )
             : null,
         child: CircleAvatar(
@@ -144,6 +164,24 @@ class _TableViewItemState extends State<TableViewItem> {
             onPressed: _toggleFavorite,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TrackDetailsView extends StatelessWidget {
+  final ZwaarsteLijstEntry entry;
+
+  const TrackDetailsView({Key? key, required this.entry}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${entry.artist} - ${entry.song}'),
+      ),
+      body: Center(
+        child: Text('Track details'),
       ),
     );
   }
