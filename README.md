@@ -64,6 +64,8 @@ File > Settings > Dart > Dart SDK path
 AVD Manager (Icon right top) > Setup a device and run it
 SDK Manager (Icon right top) > Android SDK > SDK Tools > Android SDK Platform-tools
 
+If `flutter doctor` cannot detect Android Studio even if it has been installed, you can use `flutter config --android-studio-dir=c:\android\studio`
+
 
 Links
 
